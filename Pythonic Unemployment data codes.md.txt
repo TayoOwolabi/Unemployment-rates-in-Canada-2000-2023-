@@ -1,0 +1,225 @@
+#Import relevant library
+
+import pandas as pd
+import numpy as np
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+import seaborn as sns
+data = pd.read_csv('Granular_Unemployment_Canada_2000-2023.csv')
+print(data.head())
+
+
+# Convert Categorical Variables into binary
+
+data_dummies = pd.get_dummies(data, columns=['Education Level', 'Sex', 'Age Group'],drop_first =True)
+data_dummies = data_dummies.astype(int)
+
+
+# Calculate the mean unemployment rate by year
+mean_unemployment_rate = data.groupby('Year')['Unemployment Rate'].mean().reset_index()
+
+
+# Rename columns for clarity
+mean_unemployment_rate.columns = ['Year', 'Mean Unemployment Rate']
+
+
+# Print the table of mean unemployment rates
+print("Mean Unemployment Rate from 2000-2023:")
+print(mean_unemployment_rate)
+
+
+# Plot the trend line
+plt.figure(figsize=(10, 6))
+plt.plot(mean_unemployment_rate['Year'], mean_unemployment_rate['Mean Unemployment Rate'], marker='o', linestyle='-', color='b')
+plt.title('Mean Unemployment Rate (2000-2023)')
+plt.xlabel('Year')
+plt.ylabel('Unemployment Rate')
+plt.grid(True)
+plt.tight_layout()
+#plt.savefig("Mean_Unemployment_Rate_Trend.png")
+#plt.show()
+
+
+# Calculate mean unemployment rate per year for males and females separately
+
+mean_unemployment_rate_males = data[data['Sex'] == 'Males'].groupby('Year')['Unemployment Rate'].mean().reset_index()
+mean_unemployment_rate_females = data[data['Sex'] == 'Females'].groupby('Year')['Unemployment Rate'].mean().reset_index()
+#mean_unemployment = data.groupby('Year')['Unemployment Rate'].mean().reset_index()
+
+# Plotting the trend lines for males and females
+plt.figure(figsize=(10, 6))
+
+# Plot for Males
+plt.plot(mean_unemployment_rate_males['Year'], mean_unemployment_rate_males['Unemployment Rate'], marker='o', label='Males')
+
+# Plot for Females
+plt.plot(mean_unemployment_rate_females['Year'], mean_unemployment_rate_females['Unemployment Rate'], marker='o', label='Females')
+
+# Titles and labels
+plt.title('Mean Male/Female Unemployment Rate')
+plt.xlabel('Year')
+plt.ylabel('Mean Unemployment Rate (%)')
+plt.legend()
+plt.grid()
+plt.tight_layout()
+
+
+# Determine mean unemployment for ages 25-54 based on education level 
+
+# Filter the data for age group "25 to 54 years"
+filtered_data = data[data['Age Group'] == '25 to 54 years']
+
+# Function to plot average unemployment by specific filters
+def plot_unemployment(data, title, filter_criteria, line_colors):
+    plt.figure(figsize=(10, 6))
+    for (sex, color) in line_colors:
+        subset = data[(data['Sex'] == sex) & filter_criteria]
+        if subset.empty:
+            print(f"No data available for {sex} with the given filter criteria.")
+            continue
+        avg_unemployment = subset.groupby('Year')['Unemployment Rate'].mean().reset_index()
+        if avg_unemployment.empty:
+            print(f"Unemployment data could not be aggregated for {sex}.")
+            continue
+        plt.plot(avg_unemployment['Year'], avg_unemployment['Unemployment Rate'], 
+                 label=f"{sex}", color=color, marker='o')
+    plt.title(title)
+    plt.xlabel('Year')
+    plt.ylabel('Unemployment Rate (%)')
+    plt.legend()
+    plt.grid()
+    plt.tight_layout()
+    plt.show()
+
+# Plot 1: All education levels, 25 to 54 years
+plot_unemployment(
+    filtered_data, 
+    title='Mean Unemployment Rate (All Education Levels, 25 to 54 years)', 
+    filter_criteria=True,  # No specific filter on education level
+    line_colors=[('Males', 'blue'), ('Females', 'pink')]   
+)
+
+
+# Plot 2: Elementary School education level, 25 to 54 years
+plot_unemployment(
+    filtered_data, 
+    title='Mean Unemployment Rate (Elementary School, 25 to 54 years)', 
+    filter_criteria=(filtered_data['Education Level'] == 'Elementary School'), 
+    line_colors=[('Males', 'blue'), ('Females', 'pink')]
+)
+
+# Plot 3: Some High School education level, 25 to 54 years
+plot_unemployment(
+    filtered_data, 
+    title='Mean Unemployment Rate (Some High School, 25 to 54 years)', 
+    filter_criteria=(filtered_data['Education Level'] == 'Some high school'), 
+    line_colors=[('Males', 'blue'), ('Females', 'pink')]
+)
+
+# Plot 4: High School Graduate education level, 25 to 54 years
+plot_unemployment(
+    filtered_data, 
+    title='Mean Unemployment Rate (High School Graduate, 25 to 54 years)', 
+    filter_criteria=(filtered_data['Education Level'] == 'High school graduate'), 
+    line_colors=[('Males', 'blue'), ('Females', 'pink')]
+)
+
+# Plot 5: Post Secondary Certificate or Diploma education level, 25 to 54 years
+plot_unemployment(
+    filtered_data, 
+    title='Mean Unemployment Rate (Post Secondary Certificate or Diploma, 25 to 54 years)', 
+    filter_criteria=(filtered_data['Education Level'] == 'Post secondary certificate or diploma'), 
+    line_colors=[('Males', 'blue'), ('Females', 'pink')]
+)
+
+# Plot 6: Bachelor's Degree Education level, 25 to 54 years
+plot_unemployment(
+    filtered_data, 
+    title='Mean Unemployment Rate (Bachelor\'s Degree, 25 to 54 years)', 
+    filter_criteria=(filtered_data['Education Level'] == "Bachelor's degree"), 
+    line_colors=[('Males', 'blue'), ('Females', 'pink')]
+)
+
+# Plot 7: Above Bachelor's Degree education level, 25 to 54 years
+plot_unemployment(
+    filtered_data, 
+    title='Mean Unemployment Rate (Above Bachelor\'s Degree, 25 to 54 years)', 
+    filter_criteria=(filtered_data['Education Level'] == "Above bachelor's degree"), 
+    line_colors=[('Males', 'blue'), ('Females', 'pink')]
+)
+
+
+# Mean Unemployment for ages 55 to 64 years
+
+filtered_data = data[data['Age Group'] == '55 to 64 years']
+plot_unemployment(
+    filtered_data, 
+    title='Mean Unemployment Rate (55 to 64 years)', 
+    filter_criteria=True,  # No specific filter on education level
+    line_colors=[('Males', 'blue'), ('Females', 'pink')]   
+)
+plt.savefig("Mean Unemployment Rate (55 to 64 years).png")
+plt.show()
+
+
+# Mean Unemployment for ages 65 and above
+
+filtered_data = data[data['Age Group'] == '65 years and over']
+plot_unemployment(
+    filtered_data, 
+    title='Mean Unemployment Rate (All Education Levels, Above 65 years)', 
+    filter_criteria=True,  # No specific filter on education level
+    line_colors=[('Males', 'blue'), ('Females', 'pink')]   
+)
+
+
+## Logistic Regression Model
+
+#Step 1:  Data Preparation:   We'll first need to create dummy variables for categorical fields such as education level, 
+#age group, and sex, and define the binary target variable based on the unemployment rate.
+
+# Creating a binary target variable: 1 if Unemployment Rate > 5.4, else 0
+data['High Unemployment'] = np.where(data['Unemployment Rate'] > 5.4, 1, 0)
+
+# Create dummy variables
+data = pd.get_dummies(data, columns=['Education Level', 'Sex', 'Age Group'], drop_first=True)
+data = data.astype(int)
+
+# Defining the target and features
+X = data.drop(['Unemployment Rate', 'Year', 'High Unemployment'], axis=1)
+y = data['High Unemployment']
+
+# Adding a constant for the intercept
+X = sm.add_constant(X)
+
+# Fitting the logistic regression model
+logit_model = sm.Logit(y, X)
+result = logit_model.fit()
+
+#Step 3: After fitting the model, we can display the summary.
+
+# Displaying the model summary
+print(result.summary())
+
+#Step 4: Model Prediction and Accuracy
+
+#To evaluate the accuracy of the model, we can calculate the predicted probabilities and compare them with the actual outcomes.
+
+# Predicting probabilities
+predicted_probs = result.predict(X)
+
+# Classifying based on a threshold (0.5)
+predicted_classes = np.where(predicted_probs > 0.5, 1, 0)
+
+# Calculating accuracy
+accuracy = np.mean(predicted_classes == y)
+print(f'Accuracy of the model: {accuracy:.2f}')
+
+
+# Save the regression results to a text file
+#with open("Logit_Regression_Results.txt","w") as f:
+#          f.write(result.summary().as_text())
+
+```python
+
+```

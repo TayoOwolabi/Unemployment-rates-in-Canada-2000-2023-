@@ -1,0 +1,73 @@
+                           Logit Regression Results                           
+==============================================================================
+Dep. Variable:      High Unemployment   No. Observations:                 1116
+Model:                          Logit   Df Residuals:                     1106
+Method:                           MLE   Df Model:                            9
+Date:                Thu, 06 Feb 2025   Pseudo R-squ.:                  0.4985
+Time:                        18:36:55   Log-Likelihood:                -343.68
+converged:                       True   LL-Null:                       -685.25
+Covariance Type:            nonrobust   LLR p-value:                2.920e-141
+=========================================================================================================================
+                                                            coef    std err          z      P>|z|      [0.025      0.975]
+-------------------------------------------------------------------------------------------------------------------------
+const                                                     2.5662      0.762      3.368      0.001       1.073       4.060
+Education Level_Bachelor's degree                         1.1698      0.395      2.961      0.003       0.396       1.944
+Education Level_Elementary School                         5.7757      0.613      9.429      0.000       4.575       6.976
+Education Level_High school graduate                      3.4189      0.395      8.666      0.000       2.646       4.192
+Education Level_Post secondary certificate or diploma     2.2548      0.380      5.927      0.000       1.509       3.000
+Education Level_Some high school                          4.7201      0.409     11.542      0.000       3.919       5.522
+Sex_Males                                                 0.6045      0.198      3.054      0.002       0.217       0.992
+Age Group_25 to 54 years                                 -4.9843      0.745     -6.692      0.000      -6.444      -3.524
+Age Group_55 to 64 years                                 -5.2853      0.747     -7.074      0.000      -6.750      -3.821
+Age Group_65 years and over                              -6.4398      0.773     -8.333      0.000      -7.955      -4.925
+=========================================================================================================================
+
+1. Key implications of Regression
+
+*  During high unemployment, chances of being unemployed is lower the higher the level of education
+
+*  Men are more likely to be unemployed than women during high unemployment.
+
+*  For all other age groups, chances of being unemployed during high unemployment is only slightly less than age group 15-24years.
+
+
+2.  The data comprise categorical variables. As such, logistic regression is appropriate. If the variables were quantitative, multiple OLS linear regression would apply.
+
+
+3. Dummies (reference variables)
+
+For education level, the reference category is the Above Bachelor's degree
+
+For Sex, females is the reference category
+
+For age group, 15-24 years is the reference category
+
+
+4. Mechanics
+
+In this logit model, Canada faces high unemployment-dependent variable (regressand)-when unemployment level is greater than 5.4%.  
+
+To have relevant and significant predictive power, the p-value of the predictors should be less than or equal to 0.05 in a regression model. If the p-value is more than 0.05, the chances of chance occurrence is greater than 5%, and it is considered statistically insignificant.
+
+All the predictors (explanatory variables) in our model are less than 0.05, and are as such, statistically significant.
+
+
+5. Interpretation of Logit regression
+
+The interpretation of logit regression coefficient is a bit tricky but quite interesting
+
+* For Bachelor's degree, the chances of being unemployed during high unemployment is 222% higher than above Bachelor's degree
+ 
+* For Post Secondary school or diploma, the chances of being unemployed during high unemployment is 853% higher than above Bachelor's degree
+
+* For High School, the chances of being unemployed during high unemployment is 2953% higher than above Bachelor's degree
+
+* For Some High School, the chances of being unemployed during high unemployment is 11000% higher than above Bachelor's degree
+
+* For Males, all things being equal (i.e. not accounting for education and age), the chances of being unemployed during high unemployment is 83% higher than females
+
+* For age group 25-54years,the chances of being unemployed during high unemployment is 0.993% less than age group 15-24years
+
+* For age group 55-64years,the chances of being unemployed during high unemployment is 0.995% less than age group 15-24years
+
+* For age 65years and over, the chances of being unemployed during high unemployment is 0.998% less than age group 15-24years
